@@ -36,7 +36,7 @@
             <i class="lni lni-grid-alt"></i>
           </button>
           <div class="sidebar-logo">
-            <a href="#">Website Sell Phone</a>
+            <a href="#">Dino store</a>
           </div>
         </div>
 
@@ -75,18 +75,6 @@
             </ul>
           </li>
           <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-              <i class="fa-solid fa-chart-pie"></i>
-              <span>Analytics</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-              <i class="fa-solid fa-message"></i>
-              <span>Message</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
             <a href="user-manage" class="sidebar-link">
               <i class="fa-solid fa-people-group"></i>
               <span>User</span>
@@ -123,7 +111,7 @@
         </div>
 
         <section id="product-management" class="mb-5">
-          <h2>Order Management</h2>
+          <h2>User Management</h2>
 
           <table class="table table-striped" id="myTable">
             <thead>

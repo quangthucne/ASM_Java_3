@@ -6,6 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -19,7 +20,10 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
   <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/Admin.css">
-
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
 </head>
 
 <body>
@@ -32,7 +36,7 @@
             <i class="lni lni-grid-alt"></i>
           </button>
           <div class="sidebar-logo">
-            <a href="#">Website Sell Phone</a>
+            <a href="#">Dino store</a>
           </div>
         </div>
 
@@ -69,18 +73,6 @@
                 </a>
               </li>
             </ul>
-          </li>
-          <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-              <i class="fa-solid fa-chart-pie"></i>
-              <span>Analytics</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="#" class="sidebar-link">
-              <i class="fa-solid fa-message"></i>
-              <span>Message</span>
-            </a>
           </li>
           <li class="sidebar-item">
             <a href="user-manage" class="sidebar-link">
@@ -120,16 +112,10 @@
 
         <section id="product-management" class="mb-5">
           <h2>Order Management</h2>
-          <form class="d-flex float-end" role="search">
-            <input class="form-control me-2" type="search" placeholder="Search Order"
-                   aria-label="Search" style="width: 300px;">
-            <button class="btn btn-outline-primary" type="submit">Search</button>
-
-          </form>
-          <table class="table table-striped">
+          <table class="table table-striped" id="myTable">
             <thead>
             <tr>
-              <th>ID</th>
+              <th>STT</th>
               <th>Orderer</th>
               <th>Total</th>
               <td>Status</td>
@@ -137,48 +123,26 @@
             </tr>
             </thead>
             <tbody>
+            <c:forEach items="${orderList}" varStatus="vs" var="order">
             <tr>
-              <td>1</td>
-              <td>Nguyễn Văn A</td>
-              <td>500.000 VND</td>
-              <td><span class="badge bg-success">Completed</span></td>
               <td>
-                <button class="btn btn-sm btn-info" title="View"><i
-                        class="fa-solid fa-eye"></i></button>
-                <button class="btn btn-sm btn-warning" title="Edit"><i
-                        class="fa-solid fa-edit"></i></button>
-                <button class="btn btn-sm btn-danger" title="Delete"><i
-                        class="fa-solid fa-trash"></i></button>
+                ${vs.count}
+              </td>
+              <td>${order.userModel.fullName}</td>
+              <td>${order.totalAmount} VND</td>
+              <c:choose>
+                <c:when test="${order.status == 1}"><td><span class="badge bg-success">Hoành thành</span></td></c:when>
+                <c:when test="${order.status == 0}"><td><span class="badge bg-danger">Đã hủy</span></td></c:when>
+                <c:when test="${order.status == 2}"><td><span class="badge bg-warning">Dang xử lý</span></td></c:when>
+              </c:choose>
+              <td>
+                <button class="btn btn-sm btn-warning" title="Edit" data-bs-toggle="modal" data-bs-target="#editOrderModal" onclick="populateModal(${order.idOrder}, ${order.status})">
+                  <i class="fa-solid fa-edit"></i>
+                </button>
               </td>
             </tr>
-            <tr>
-              <td>2</td>
-              <td>Trần Thị B</td>
-              <td>300.000 VND</td>
-              <td><span class="badge bg-warning">Pending</span></td>
-              <td>
-                <button class="btn btn-sm btn-info" title="View"><i
-                        class="fa-solid fa-eye"></i></button>
-                <button class="btn btn-sm btn-warning" title="Edit"><i
-                        class="fa-solid fa-edit"></i></button>
-                <button class="btn btn-sm btn-danger" title="Delete"><i
-                        class="fa-solid fa-trash"></i></button>
-              </td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td>Phạm Văn C</td>
-              <td>750.000 VND</td>
-              <td><span class="badge bg-danger">Cancelled</span></td>
-              <td>
-                <button class="btn btn-sm btn-info" title="View"><i
-                        class="fa-solid fa-eye"></i></button>
-                <button class="btn btn-sm btn-warning" title="Edit"><i
-                        class="fa-solid fa-edit"></i></button>
-                <button class="btn btn-sm btn-danger" title="Delete"><i
-                        class="fa-solid fa-trash"></i></button>
-              </td>
-            </tr>
+            </c:forEach>
+
 
             </tbody>
           </table>
@@ -192,6 +156,30 @@
 
 
   </main>
+</div>
+<div class="modal fade" id="editOrderModal" tabindex="-1" aria-labelledby="editOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editOrderModalLabel">Chỉnh sửa trạng thái đơn hàng</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="updateOrderForm" action="${pageContext.request.contextPath}/order-manage" method="post">
+          <input type="hidden" id="orderId" name="orderId">
+          <div class="mb-3">
+            <label for="orderStatus" class="form-label">Trạng thái</label>
+            <select class="form-select" id="orderStatus" name="status">
+              <option value="2">Đang xử lý</option>
+              <option value="1">Hoàn thành</option>
+              <option value="0">Đã hủy</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 
 
@@ -250,6 +238,45 @@
     });
   });
 
+</script>
+<script>
+  $(document).ready(function() {
+    $('#myTable').DataTable({
+      paging: true,
+      ordering: true,
+      info: true,
+      language: {
+        url: "//cdn.datatables.net/plug-ins/1.13.1/i18n/vi.json"
+      }
+    });
+  });
+</script>
+<script>
+  function populateModal(orderId, currentStatus) {
+    document.getElementById('orderId').value = orderId;
+    document.getElementById('orderStatus').value = currentStatus;
+  }
+
+  // Xử lý khi form được submit
+  document.getElementById('updateOrderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const orderId = document.getElementById('orderId').value;
+    const status = document.getElementById('orderStatus').value;
+
+    // Gửi yêu cầu AJAX để cập nhật trạng thái đơn hàng
+    $.ajax({
+      type: "POST",
+      url: "${pageContext.request.contextPath}/order-manage",
+      data: { orderId: orderId, status: status },
+      success: function(response) {
+        // Cập nhật lại bảng sau khi thay đổi
+        location.reload();
+      },
+      error: function() {
+        alert("Có lỗi xảy ra. Vui lòng thử lại!");
+      }
+    });
+  });
 </script>
 
 </body>

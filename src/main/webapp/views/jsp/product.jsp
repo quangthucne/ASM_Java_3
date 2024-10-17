@@ -15,7 +15,41 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/product.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/slide.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/27e6f9e8b6.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/Admin.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <style>
+        /* Table styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .table thead th {
+            background-color: #f2f2f2;
 
+        }
+        .table img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+        .formatted-price {
+            font-weight: bold;
+        }
+    </style>
 </head>
 
 <body>
@@ -111,34 +145,30 @@
 
         </div>
     </div>
-    <div class="product-listing-container">
-        <c:forEach items="${list}" var="product">
-            <div class="product-card">
-                <img src="https://down-vn.img.susercontent.com/file/vn-11134207-7r98o-lt9bh2f6czh5ef" alt="Product 1">
-                <div class="product-info">
-                    <h3 class="product-name">${product.name}</h3>
-                    <div class="product-price">
-                        <span class="current-price">${product.price}</span>
-                        <span class="original-price">${product.price}</span>
-                        <span class="discount">-44%</span>
-                    </div>
-                    <div class="product-stats">
-                        <span class="sold">Số lượng ${product.quantity}</span>
-                        <span class="location">Hà Nội</span>
-                    </div>
-                    <div class="product-action">
-                        <button class="them-gio-hang">Thêm giỏ hàng</button>
-                        <button class="buy-now">Mua Ngay</button>
+    <div class="container">
+        <div class="row">
+            <c:forEach items="${list}" var="product">
+                <div class="col-md-3 mb-4">
+                    <div class="card product-card h-100 shadow-sm">
+                        <img src="${pageContext.request.contextPath}/assets/img/${product.image.nameImage}" class="card-img-top img-fluid" alt="${product.name}">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text text-danger">${product.price}</p>
+                            <p class="card-text text-muted">${product.quantity}</p>
+                            <div class="mt-auto">
+                                <button class="btn btn-outline-warning w-100 mb-2">Thêm giỏ hàng</button>
+                                <button class="btn btn-warning w-100">Mua Ngay</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-        </c:forEach>
-        <div class="page-action">
-            <ul class="listPage">
-            </ul>
+            </c:forEach>
         </div>
+    </div>
 
+    <div class="page-action">
+        <ul class="listPage">
+        </ul>
     </div>
         <div class="product-details" id="product-details" style="display: none;">
             <h2 id="detail-name">Tên sản phẩm</h2>

@@ -37,7 +37,7 @@
                         <i class="lni lni-grid-alt"></i>
                     </button>
                     <div class="sidebar-logo">
-                        <a href="#">Dino Store</a>
+                        <a href="#">Dino store</a>
                     </div>
                 </div>
 
