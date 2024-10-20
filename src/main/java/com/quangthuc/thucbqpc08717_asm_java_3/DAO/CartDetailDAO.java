@@ -24,7 +24,7 @@ public class CartDetailDAO extends DataDAO implements CartDetailInterface {
                 int idProduct = rs.getInt(COLUMN_ID_PRODUCT);
                 int quantityProduct = rs.getInt(COLUMN_ID_QUANTITY_PRODUCT);
                 ProductDAO productDAO = new ProductDAO();
-                List<ProductModel> products = productDAO.selectAllByIdCartDetail(idCartDetail);
+                ProductModel products = productDAO.selectAllByIdCartDetail(idCartDetail);
                 list.add(new CartDetailModel(idCartDetail, idCart, idProduct, quantityProduct, products));
             }
         } catch (SQLException e) {
@@ -34,7 +34,7 @@ public class CartDetailDAO extends DataDAO implements CartDetailInterface {
     }
 
     @Override
-    public CartDetailModel selectById(String idCartDetail) {
+    public CartDetailModel selectById(int idCartDetail) {
         CartDetailModel cartDetailModel = null;
         try {
             Connection conn = getConnection();
@@ -53,22 +53,23 @@ public class CartDetailDAO extends DataDAO implements CartDetailInterface {
     }
 
     @Override
-    public CartDetailModel selectByIdCart(String idCart) {
-        CartDetailModel cartDetailModel = null;
+    public List<CartDetailModel> selectByIdCart(int idCart) {
+        List<CartDetailModel> list = new ArrayList<>();
         try {
             Connection conn = getConnection();
             ResultSet rs = query(CART_DETAIL_SELECT_BY_ID_CART, idCart);
             while (rs.next()) {
                 int idCartDetail = rs.getInt(COLUMN_ID_CART_DETAIL);
-                int id = rs.getInt(COLUMN_ID_CART);
                 int idProduct = rs.getInt(COLUMN_ID_PRODUCT);
                 int quantityProduct = rs.getInt(COLUMN_ID_QUANTITY_PRODUCT);
-                cartDetailModel = new CartDetailModel(idCartDetail, id, idProduct, quantityProduct);
+                ProductDAO productDAO = new ProductDAO();
+                ProductModel products = productDAO.selectAllByIdCartDetail(idCartDetail);
+                list.add(new CartDetailModel(idCartDetail, idCart, idProduct, quantityProduct, products));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return cartDetailModel;
+        return list;
     }
 
     @Override

@@ -16,6 +16,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <style>
         /* Table styles */
         .table {
@@ -118,34 +120,37 @@
         <table id="myTable" class="table table-striped table-bordered">
             <thead>
             <tr>
+                <th> </th>
                 <th>STT</th>
                 <th>SẢN PHẨM</th>
                 <th>ĐƠN GIÁ</th>
                 <th>SỐ LƯỢNG</th>
                 <th>THÀNH TIỀN</th>
+                <th>Xóa</th>
             </tr>
             </thead>
             <tbody>
             <c:forEach items="${cartDetail}" var="cart" varStatus="vs">
-                    <c:forEach items="${cart.productModelList}" var="pro">
                         <tr>
+                            <td><input type="checkbox"></td>
                             <td>${vs.count}</td>
                             <td class="info-produce">
-                                <img src="${pageContext.request.contextPath}/assets/img/${pro.image.nameImage}"
-                                     alt="${pro.name}" style="width:50px;">
-                                <p>${pro.name}</p>
+                                <img src="${pageContext.request.contextPath}/assets/img/${cart.productModelList.image.nameImage}"
+                                     alt="${cart.productModelList.name}" style="width:50px;">
+                                <p>${cart.productModelList.name}</p>
                             </td>
-                            <td class="price" ><span class="formatted-price">${pro.price}</span></td>
+                            <td class="price" ><span class="formatted-price">${cart.productModelList.price}</span></td>
                             <td class="quantity">
                                 <button onclick="updateQuantity(this, -1)">-</button>
                                 <input type="text" class="quantity-input" value="${cart.quantityProduct}" />
                                 <button onclick="updateQuantity(this, 1)">+</button>
                             </td>
-                            <td class="total">0đ</td>
-
+                            <td class="total"><span class="formatted-price">${cart.productModelList.price * cart.quantityProduct}</span></td>
+                            <td>
+                                <a href="" class="btn btn-danger">Xóa</a>
+                            </td>
                         </tr>
                     </c:forEach>
-            </c:forEach>
             </tbody>
         </table>
     </div>
@@ -228,59 +233,39 @@
             language: {
                 url: "//cdn.datatables.net/plug-ins/1.13.1/i18n/vi.json"
             },
-            columnDefs: [
-                {
-                    targets: 4, // Assuming index 4 is the "Thành Tiền" column
-                    render: function(data, type, row, meta) {
-                        const price = parseFloat(row[2].replace(/\./g, "").replace(" VNĐ", "").trim());
-                        const quantity = parseInt(row[3]);
-                        const total = price * quantity;
-
-                        // Format and return total with currency
-                        return total.toLocaleString('vi-VN') + "VND";
-                    }
-                }
-            ]
         });
 
         // Initialize total prices on page load
-        $('#myTable tbody tr').each(function() {
-            const tr = $(this);
-            const price = parseFloat(tr.find('.price').text().replace(/\./g, "").replace(" VNĐ", "").trim());
-            const quantity = parseInt(tr.find('.quantity-input').val());
-            const total = price * quantity;
-            tr.find('.total').text(total.toLocaleString('vi-VN') + "VND");
-        });
     });
 
 
 
 
-    function updateQuantity(button, change) {
-        const input = button.parentElement.querySelector('.quantity-input');
-        let quantity = parseInt(input.value);
-        quantity += change;
-
-        if (quantity < 0) {
-            quantity = 0;
-        }
-
-        input.value = quantity;
-
-        const row = button.closest('tr');
-        const priceText = row.querySelector('.price').textContent;
-
-        // Parse the price correctly (ensure you're removing currency format)
-        const price = parseFloat(priceText.replace(/\./g, "").replace(" VNĐ", "").trim());
-
-        const total = price * quantity;
-
-        const totalCell = row.querySelector('.total');
-        // Format total correctly with thousands separator and currency
-        totalCell.textContent = total.toLocaleString('vi-VN') + "VND";
-
-        updateOrderTotal();
-    }
+    // function updateQuantity(button, change) {
+    //     const input = button.parentElement.querySelector('.quantity-input');
+    //     let quantity = parseInt(input.value);
+    //     quantity += change;
+    //
+    //     if (quantity < 0) {
+    //         quantity = 0;
+    //     }
+    //
+    //     input.value = quantity;
+    //
+    //     const row = button.closest('tr');
+    //     const priceText = row.querySelector('.price').textContent;
+    //
+    //     // Parse the price correctly (ensure you're removing currency format)
+    //     const price = parseFloat(priceText.replace(/\./g, "").replace(" VNĐ", "").trim());
+    //
+    //     const total = price * quantity;
+    //
+    //     const totalCell = row.querySelector('.total');
+    //     // Format total correctly with thousands separator and currency
+    //     totalCell.textContent = total.toLocaleString('vi-VN') + "VND";
+    //
+    //     updateOrderTotal();
+    // }
 
 
 

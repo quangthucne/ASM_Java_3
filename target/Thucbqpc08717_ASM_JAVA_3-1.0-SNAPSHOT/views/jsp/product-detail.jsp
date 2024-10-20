@@ -114,7 +114,7 @@
                 <div class="border rounded-4 mb-3 d-flex justify-content-center">
                     <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image"
                        href="${pageContext.request.contextPath}/assets/img/${product.listImage[0].nameImage}">
-                        <img style="width: 500px; height: 500px; object-fit: cover; margin: auto;" class="rounded-4 fit"
+                        <img style="width: 100%; height: 500px; object-fit: cover; margin: auto;" class="rounded-4 fit"
                              src="${pageContext.request.contextPath}/assets/img/${product.listImage[0].nameImage}"
                              alt="${product.name}" id="mainImage" />
                     </a>
@@ -124,7 +124,7 @@
                         <a href="javascript:void(0);" class="thumbnail" onclick="changeImage('${img.nameImage}')">
                             <img width="60" height="60" class="rounded-2"
                                  src="${pageContext.request.contextPath}/assets/img/${img.nameImage}"
-                                 alt="Thumbnail" />
+                                 alt="Thumbnail"/>
                         </a>
                     </c:forEach>
                 </div>
@@ -164,22 +164,35 @@
                         <div class="col-md-4 col-6 mb-3">
                             <label class="mb-2 d-block">Số lượng ${product.quantity}</label>
                             <div class="input-group mb-3" style="width: 170px;">
-                                <button class="btn btn-white border border-secondary px-3" type="button"
-                                        id="button-addon1" data-mdb-ripple-color="dark">
-                                    <i class="fas fa-minus"></i>
-                                </button>
-                                <input type="text" class="form-control text-center border border-secondary"
-                                       placeholder="14" aria-label="Example text with button addon"
-                                       aria-describedby="button-addon1" />
-                                <button class="btn btn-white border border-secondary px-3" type="button"
-                                        id="button-addon2" data-mdb-ripple-color="dark">
-                                    <i class="fas fa-plus"></i>
-                                </button>
+                                <div class="input-group">
+                                    <button class="btn btn-white border border-secondary px-3" type="button"
+                                            id="button-minus" onclick="updateInput(this, -1)">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="text" class="form-control text-center border border-secondary"
+                                           placeholder="14" aria-label="Example text with button addon"
+                                           aria-describedby="button-addon1" value="1" id="quantity-input" name="quantityCart"/>
+                                    <button class="btn btn-white border border-secondary px-3" type="button"
+                                            id="button-plus" onclick="updateInput(this, 1)">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <a href="#" class="btn btn-warning shadow-0"> Mua hàng </a>
-                    <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng</a>
+                    <div class="mt-auto">
+                        <form action="${pageContext.request.contextPath}/addtocart" method="post">
+                            <input type="hidden" name="quantity" id="quantity-hidden" value="1" />
+                            <input type="text" name="idProduct" hidden="hidden" value="${product.idProduct}">
+                            <button class="btn btn-outline-warning w-100 mb-2" type="submit" onclick="setQuantity()">
+                                Thêm giỏ hàng
+                            </button>
+                        </form>
+
+                        <button class="btn btn-warning w-100">Mua Ngay</button>
+                    </div>
+<%--                    <a href="#" class="btn btn-warning shadow-0"> Mua hàng </a>--%>
+<%--                    <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng</a>--%>
                 </div>
             </main>
         </div>
@@ -289,6 +302,20 @@
         const mainImage = document.getElementById("mainImage");
         mainImage.src = "${pageContext.request.contextPath}/assets/img/" + imageName;
     }
+
+    function updateInput(button, change) {
+        const input = button.parentElement.querySelector('#quantity-input');
+        let quantity = parseInt(input.value) + change;
+
+        if (quantity < 1) {
+            quantity = 1; // Prevent the quantity from going below 1
+        }
+
+        input.value = quantity;
+        document.getElementById("quantity-hidden").value = quantity;
+    }
+
+
 </script>
 </body>
 </html>

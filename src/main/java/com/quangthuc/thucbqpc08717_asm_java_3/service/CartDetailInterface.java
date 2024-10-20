@@ -22,9 +22,9 @@ public interface CartDetailInterface {
 
     public List<CartDetailModel> selectAll();
 
-    public CartDetailModel selectById(String idCartDetail);
+    public CartDetailModel selectById(int idCartDetail);
 
-    public CartDetailModel selectByIdCart(String idCart);
+    public List<CartDetailModel> selectByIdCart(int idCart);
 
     public boolean insert(CartDetailModel cartDetailModel);
 

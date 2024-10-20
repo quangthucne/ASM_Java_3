@@ -48,7 +48,14 @@ public interface ProductInterface {
 
     );
 
-    String PRODUCT_SELECT_ALL_BY_ID_CART_DETAIL = String.format("SELECT %s.%s , %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, img.%s FROM %s INNER JOIN %s  ON %s.%s = %s.%s INNER JOIN (SELECT %s, %s, ROW_NUMBER() OVER (PARTITION BY %s ORDER BY %s) AS row_num FROM %s) AS img ON %s.%s = img.%s AND img.row_num = 1 INNER JOIN cart_detail cd ON cd.%s = %s.%s WHERE cd.id_cart = ?;",
+    String PRODUCT_SELECT_ALL_BY_ID_CART = String.format("SELECT %s.%s , %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, img.%s FROM %s INNER JOIN %s  ON %s.%s = %s.%s INNER JOIN (SELECT %s, %s, ROW_NUMBER() OVER (PARTITION BY %s ORDER BY %s) AS row_num FROM %s) AS img ON %s.%s = img.%s AND img.row_num = 1 INNER JOIN cart_detail cd ON cd.%s = %s.%s WHERE cd.id_cart = ?;",
+            TABLE_NAME_PRODUCT, COLUMN_ID_PRODUCT, TABLE_NAME_PRODUCT, COLUMN_ID_CATEGORY, TABLE_NAME_PRODUCT, COLUMN_NAME, TABLE_NAME_PRODUCT, COLUMN_SHORT_DESC, TABLE_NAME_PRODUCT, COLUMN_DETAIL, TABLE_NAME_PRODUCT, COLUMN_QUANTITY, TABLE_NAME_PRODUCT, COLUMN_PRICE, TABLE_NAME_PRODUCT, COLUMN_DATE_CREATED, TABLE_NAME_PRODUCT, COLUMN_STATUS, TABLE_NAME_CATEGORY, COLUMN_NAME_CATEGORY, COLUMN_NAME_IMAGE,
+            TABLE_NAME_PRODUCT,
+            TABLE_NAME_CATEGORY, TABLE_NAME_PRODUCT, COLUMN_ID_CATEGORY, TABLE_NAME_CATEGORY, COLUMN_ID_CATEGORY,
+            COLUMN_ID_PRODUCT, COLUMN_NAME_IMAGE, COLUMN_ID_PRODUCT, COLUMN_NAME_IMAGE, TABLE_NAME_IMAGE, TABLE_NAME_PRODUCT, COLUMN_ID_PRODUCT, COLUMN_ID_PRODUCT, COLUMN_ID_PRODUCT, TABLE_NAME_PRODUCT, COLUMN_ID_PRODUCT
+    );
+
+    String PRODUCT_SELECT_ALL_BY_ID_CART_DETAIL = String.format("SELECT %s.%s , %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, %s.%s, img.%s FROM %s INNER JOIN %s  ON %s.%s = %s.%s INNER JOIN (SELECT %s, %s, ROW_NUMBER() OVER (PARTITION BY %s ORDER BY %s) AS row_num FROM %s) AS img ON %s.%s = img.%s AND img.row_num = 1 INNER JOIN cart_detail cd ON cd.%s = %s.%s WHERE cd.id_cart_detail = ?;",
             TABLE_NAME_PRODUCT, COLUMN_ID_PRODUCT, TABLE_NAME_PRODUCT, COLUMN_ID_CATEGORY, TABLE_NAME_PRODUCT, COLUMN_NAME, TABLE_NAME_PRODUCT, COLUMN_SHORT_DESC, TABLE_NAME_PRODUCT, COLUMN_DETAIL, TABLE_NAME_PRODUCT, COLUMN_QUANTITY, TABLE_NAME_PRODUCT, COLUMN_PRICE, TABLE_NAME_PRODUCT, COLUMN_DATE_CREATED, TABLE_NAME_PRODUCT, COLUMN_STATUS, TABLE_NAME_CATEGORY, COLUMN_NAME_CATEGORY, COLUMN_NAME_IMAGE,
             TABLE_NAME_PRODUCT,
             TABLE_NAME_CATEGORY, TABLE_NAME_PRODUCT, COLUMN_ID_CATEGORY, TABLE_NAME_CATEGORY, COLUMN_ID_CATEGORY,
@@ -65,7 +72,9 @@ public interface ProductInterface {
 
     public List<ProductModel> selectAll();
 
-    public List<ProductModel> selectAllByIdCartDetail(int idCartDetail);
+    public ProductModel selectAllByIdCartDetail(int idCartDetail);
+
+    public List<ProductModel> selectAllByIdCart(int idCart);
 
     public ProductModel selectById(int id);
 

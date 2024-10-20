@@ -1,8 +1,11 @@
 package com.quangthuc.thucbqpc08717_asm_java_3.DAO;
 
 
+import com.quangthuc.thucbqpc08717_asm_java_3.model.CartDetailModel;
 import com.quangthuc.thucbqpc08717_asm_java_3.model.CartModel;
+import com.quangthuc.thucbqpc08717_asm_java_3.model.ProductModel;
 import com.quangthuc.thucbqpc08717_asm_java_3.service.CartInterface;
+import com.quangthuc.thucbqpc08717_asm_java_3.service.ProductInterface;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -29,7 +32,7 @@ public class CartDAO extends DataDAO implements CartInterface {
     }
 
     @Override
-    public CartModel selectById(String idCart) {
+    public CartModel selectById(int idCart) {
         CartModel cartModel = null;
         try {
             Connection conn = getConnection();
@@ -37,7 +40,9 @@ public class CartDAO extends DataDAO implements CartInterface {
             while (rs.next()) {
                 int id = rs.getInt(COLUMN_ID_CART);
                 int idUser = rs.getInt(COLUMN_ID_USER);
-                cartModel = new CartModel(id, idUser);
+               CartDetailDAO cartDetailDAO = new CartDetailDAO();
+               List<CartDetailModel> cartDetailModelList = cartDetailDAO.selectByIdCart(idCart);
+                cartModel = new CartModel(id, idUser, cartDetailModelList);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -46,7 +51,7 @@ public class CartDAO extends DataDAO implements CartInterface {
     }
 
     @Override
-    public CartModel selectByIdUser(String idUser) {
+    public CartModel selectByIdUser(int idUser) {
         CartModel cartModel = null;
         try {
             Connection conn = getConnection();
@@ -54,7 +59,9 @@ public class CartDAO extends DataDAO implements CartInterface {
             while (rs.next()) {
                 int idCart = rs.getInt(COLUMN_ID_CART);
                 int id = rs.getInt(COLUMN_ID_USER);
-                cartModel = new CartModel(idCart, id);
+                CartDetailDAO cartDetailDAO = new CartDetailDAO();
+                List<CartDetailModel> list = cartDetailDAO.selectByIdCart(idCart);
+                cartModel = new CartModel(idCart, id, list);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

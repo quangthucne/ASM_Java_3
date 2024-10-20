@@ -160,20 +160,23 @@
         <div class="row">
             <c:forEach items="${list}" var="product">
                 <div class="col-md-3 mb-4">
-                    <a href="product/detail?id=${product.idProduct}" class="text-decoration-none">
                         <div class="card product-card h-100 shadow-sm">
-                            <img src="${pageContext.request.contextPath}/assets/img/${product.image.nameImage}" class="card-img-top img-fluid" alt="${product.name}">
-                            <div class="card-body d-flex flex-column">
-                                <h5 class="card-title">${product.name}</h5>
-                                <p class="card-text text-danger">Giá bán <span class="formatted-price">${product.price}</span></p>
-                                <p class="card-text text-muted">Số lượng ${product.quantity}</p>
-                                <div class="mt-auto">
-                                    <button class="btn btn-outline-warning w-100 mb-2" data-idCart="idCart">Thêm giỏ hàng</button>
-                                    <button class="btn btn-warning w-100">Mua Ngay</button>
+                            <a href="product/detail?id=${product.idProduct}" class="text-decoration-none">
+                                <img src="${pageContext.request.contextPath}/assets/img/${product.image.nameImage}" class="card-img-top img-fluid" alt="${product.name}">
+                            </a>
+                                <div class="card-body d-flex flex-column">
+                                    <a href="product/detail?id=${product.idProduct}" class="text-decoration-none">
+                                        <h5 class="card-title">${product.name}</h5>
+                                        <p class="card-text text-danger">Giá bán <span class="formatted-price">${product.price}</span></p>
+                                        <p class="card-text text-muted">Số lượng ${product.quantity}</p>
+                                    </a>
+                                    <div class="mt-auto">
+                                        <button class="btn btn-outline-warning w-100 mb-2" data-idCart="idCart">Thêm giỏ hàng</button>
+                                        <button class="btn btn-warning w-100">Mua Ngay</button>
+                                    </div>
                                 </div>
-                            </div>
+
                         </div>
-                    </a>
                 </div>
             </c:forEach>
         </div>

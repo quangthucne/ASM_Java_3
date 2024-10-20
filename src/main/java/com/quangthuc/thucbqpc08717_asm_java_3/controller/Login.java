@@ -35,9 +35,7 @@ public class Login extends HttpServlet {
         if (userModel != null && password.equals(userModel.getPassword())) {
             if (password.equals(userModel.getPassword())){
                 Cookie idUser = new Cookie("idUser", String.valueOf(userModel.getIdUser()));
-                idUser.setMaxAge(60);
                 Cookie roleUser = new Cookie("roleUser", String.valueOf(userModel.getRole()));
-                roleUser.setMaxAge(60);
 
                 resp.addCookie(idUser);
                 resp.addCookie(roleUser);

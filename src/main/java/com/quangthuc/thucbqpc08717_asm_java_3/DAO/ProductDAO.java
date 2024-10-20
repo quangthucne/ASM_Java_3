@@ -72,12 +72,43 @@ public class ProductDAO extends DataDAO implements ProductInterface {
     }
 
     @Override
-    public List<ProductModel> selectAllByIdCartDetail(int idCartDetail) {
-        List<ProductModel> list = new ArrayList<>();
+    public ProductModel selectAllByIdCartDetail(int idCartDetail) {
+        ProductModel productModel = null;
         try {
             Connection con = getConnection();
 
             ResultSet rs = query(PRODUCT_SELECT_ALL_BY_ID_CART_DETAIL, idCartDetail);
+            while (rs.next()){
+                //info SQl
+                int idProduct = rs.getInt(COLUMN_ID_PRODUCT);
+                int idCategory = rs.getInt(COLUMN_ID_CATEGORY);
+                String nameCategory = rs.getString(COLUMN_NAME_CATEGORY);
+                String nameImage = rs.getString(COLUMN_NAME_IMAGE);
+                String name = rs.getString(COLUMN_NAME);
+                String shortDesc = rs.getString(COLUMN_SHORT_DESC);
+                String detail = rs.getString(COLUMN_DETAIL);
+                int quantity = rs.getInt(COLUMN_QUANTITY);
+                int price = rs.getInt(COLUMN_PRICE);
+                Date dateCreated = rs.getDate(COLUMN_DATE_CREATED);
+                int status = rs.getInt(COLUMN_STATUS);
+                //img
+                ImageModel imageModel = new ImageModel(idProduct, nameImage);
+                productModel = new ProductModel(idProduct, idCategory, name, shortDesc, detail, quantity, price, dateCreated, status, imageModel);
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return productModel;
+    }
+
+    @Override
+    public List<ProductModel> selectAllByIdCart(int idCart) {
+        List<ProductModel> list = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+            System.out.println(PRODUCT_SELECT_ALL_BY_ID_CART);
+            ResultSet rs = query(PRODUCT_SELECT_ALL_BY_ID_CART, idCart);
             while (rs.next()){
                 //info SQl
                 int idProduct = rs.getInt(COLUMN_ID_PRODUCT);

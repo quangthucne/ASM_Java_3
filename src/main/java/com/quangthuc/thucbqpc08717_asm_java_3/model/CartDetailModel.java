@@ -9,7 +9,7 @@ public class CartDetailModel {
     private int quantityProduct;
 
 
-    private List<ProductModel> productModelList;
+    private ProductModel productModelList;
 
     public CartDetailModel() {}
 
@@ -26,7 +26,7 @@ public class CartDetailModel {
         this.quantityProduct = quantityProduct;
     }
 
-    public CartDetailModel(int idCartDetail, int idCart, int idProduct, int quantityProduct, List<ProductModel> productModelList) {
+    public CartDetailModel(int idCartDetail, int idCart, int idProduct, int quantityProduct, ProductModel productModelList) {
         this.idCartDetail = idCartDetail;
         this.idCart = idCart;
         this.idProduct = idProduct;
@@ -66,11 +66,11 @@ public class CartDetailModel {
         this.quantityProduct = quantityProduct;
     }
 
-    public List<ProductModel> getProductModelList() {
+    public ProductModel getProductModelList() {
         return productModelList;
     }
 
-    public void setProductModelList(List<ProductModel> productModelList) {
+    public void setProductModelList(ProductModel productModelList) {
         this.productModelList = productModelList;
     }
 }
