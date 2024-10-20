@@ -1,13 +1,12 @@
 package com.quangthuc.thucbqpc08717_asm_java_3.controller;
 
+import java.io.IOException;
+
 import com.quangthuc.thucbqpc08717_asm_java_3.DAO.CartDAO;
 import com.quangthuc.thucbqpc08717_asm_java_3.DAO.CartDetailDAO;
-import com.quangthuc.thucbqpc08717_asm_java_3.DAO.ProductDAO;
-import com.quangthuc.thucbqpc08717_asm_java_3.DAO.UserDAO;
 import com.quangthuc.thucbqpc08717_asm_java_3.model.CartDetailModel;
 import com.quangthuc.thucbqpc08717_asm_java_3.model.CartModel;
-import com.quangthuc.thucbqpc08717_asm_java_3.model.ProductModel;
-import com.quangthuc.thucbqpc08717_asm_java_3.model.UserModel;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
@@ -15,9 +14,9 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.IOException;
 @WebServlet("/addtocart")
 public class AddToCartController extends HttpServlet {
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         System.out.println(getIdCartByUserId(req, resp));
@@ -73,4 +72,5 @@ public class AddToCartController extends HttpServlet {
         CartDetailModel cartDetailModel = new CartDetailModel(idCart, idProduct, quantity);
         cartDetailDAO.insert(cartDetailModel);
     }
+    // hi
 }
