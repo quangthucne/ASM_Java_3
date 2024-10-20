@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: buiquangthuc
@@ -11,7 +12,35 @@
     <title>Giỏ hàng</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/cart-shopping.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/style.css" type="text/css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <style>
+        /* Table styles */
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .table thead th {
+            background-color: #f2f2f2;
 
+        }
+        .table img {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+        }
+        .formatted-price {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <div class="header">
@@ -86,9 +115,10 @@
 </div>
 <div id="wrapper">
     <div class="table-cart">
-        <table id="cart">
+        <table id="myTable" class="table table-striped table-bordered">
             <thead>
             <tr>
+                <th>STT</th>
                 <th>SẢN PHẨM</th>
                 <th>ĐƠN GIÁ</th>
                 <th>SỐ LƯỢNG</th>
@@ -96,68 +126,32 @@
             </tr>
             </thead>
             <tbody>
-            <tr class="product">
-                <td class="info-produce">
-                    <img src="https://product.hstatic.net/200000255805/product/img_5360_0c754306de3747d295870b921b580b51_master.jpg"
-                         alt="Giày nike" style="width:50px;">
-                    Giày Nike
-                </td>
-                <td class="price">399,000đ</td>
-                <td class="quantity">
-                    <button onclick="updateQuantity(this, -1)">-</button>
-                    <input type="text" id="quantity" value="1">
-                    <button onclick="updateQuantity(this, 1)">+</button>
-                </td>
-                <td class="total">399,000đ</td>
-            </tr>
-            <tr class="product">
-                <td class="info-produce">
-                    <img src="https://bizweb.dktcdn.net/thumb/1024x1024/100/369/522/products/balo-local-brand-di-hoc-dep-chinh-hang-academy-backpack-streetwear-2.jpg?v=1665826436727"
-                         alt="Balo" style="width:50px;">
-                    Balo
-                </td>
-                <td class="price">499,000đ</td>
-                <td class="quantity">
-                    <button onclick="updateQuantity(this, -1)">-</button>
-                    <input type="text" id="quantity" value="1">
-                    <button onclick="updateQuantity(this, 1)">+</button>
-                </td>
-                <td class="total">499,000đ</td>
-            </tr>
-            <tr class="product">
-                <td class="info-produce">
-                    <img src="https://down-vn.img.susercontent.com/file/ee6f10ad702cbfc724830cbec1690072"
-                         alt="Đồng hồ" style="width:50px;">
-                    Đồng hồ
-                </td>
-                <td class="price">299,000đ</td>
-                <td class="quantity">
-                    <button onclick="updateQuantity(this, -1)">-</button>
-                    <input type="text" id="quantity" value="1">
-                    <button onclick="updateQuantity(this, 1)">+</button>
-                </td>
-                <td class="total">299,000đ</td>
-            </tr>
-            <tr class="product">
-                <td class="info-produce">
-                    <img src="https://oemgroup.vn/uploads/cac-mon-qua-tang-su-kien-duoc-doanh-nghiep-de-mat-den-khi-danh-tang-den-khach-hang-1693296323.jpg"
-                         alt="set quà" style="width:50px;">
-                    Set quà
-                </td>
-                <td class="price">599,000đ</td>
-                <td class="quantity">
-                    <button onclick="updateQuantity(this, -1)">-</button>
-                    <input type="text" id="quantity" value="1">
-                    <button onclick="updateQuantity(this, 1)">+</button>
-                </td>
-                <td class="total">599,000đ</td>
-            </tr>
+            <c:forEach items="${cartDetail}" var="cart" varStatus="vs">
+                    <c:forEach items="${cart.productModelList}" var="pro">
+                        <tr>
+                            <td>${vs.count}</td>
+                            <td class="info-produce">
+                                <img src="${pageContext.request.contextPath}/assets/img/${pro.image.nameImage}"
+                                     alt="${pro.name}" style="width:50px;">
+                                <p>${pro.name}</p>
+                            </td>
+                            <td class="price" ><span class="formatted-price">${pro.price}</span></td>
+                            <td class="quantity">
+                                <button onclick="updateQuantity(this, -1)">-</button>
+                                <input type="text" class="quantity-input" value="${cart.quantityProduct}" />
+                                <button onclick="updateQuantity(this, 1)">+</button>
+                            </td>
+                            <td class="total">0đ</td>
+
+                        </tr>
+                    </c:forEach>
+            </c:forEach>
             </tbody>
         </table>
     </div>
     <div class="total-order">
         <div class="total-order-content">
-            <h3>Tổng đơn hàng: <span id="order-total">0đ</span></h3>
+            <h3>Tổng đơn hàng: <span id="order-total"> VND </span></h3>
         </div>
     </div>
     <div class="btn-pay">
@@ -224,5 +218,100 @@
     </script>
 </footer>
 <script src="${pageContext.request.contextPath}/views/js/main.js"></script>
+<script>
+
+    $(document).ready(function() {
+        const table = $('#myTable').DataTable({
+            paging: true,
+            ordering: true,
+            info: true,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.1/i18n/vi.json"
+            },
+            columnDefs: [
+                {
+                    targets: 4, // Assuming index 4 is the "Thành Tiền" column
+                    render: function(data, type, row, meta) {
+                        const price = parseFloat(row[2].replace(/\./g, "").replace(" VNĐ", "").trim());
+                        const quantity = parseInt(row[3]);
+                        const total = price * quantity;
+
+                        // Format and return total with currency
+                        return total.toLocaleString('vi-VN') + "VND";
+                    }
+                }
+            ]
+        });
+
+        // Initialize total prices on page load
+        $('#myTable tbody tr').each(function() {
+            const tr = $(this);
+            const price = parseFloat(tr.find('.price').text().replace(/\./g, "").replace(" VNĐ", "").trim());
+            const quantity = parseInt(tr.find('.quantity-input').val());
+            const total = price * quantity;
+            tr.find('.total').text(total.toLocaleString('vi-VN') + "VND");
+        });
+    });
+
+
+
+
+    function updateQuantity(button, change) {
+        const input = button.parentElement.querySelector('.quantity-input');
+        let quantity = parseInt(input.value);
+        quantity += change;
+
+        if (quantity < 0) {
+            quantity = 0;
+        }
+
+        input.value = quantity;
+
+        const row = button.closest('tr');
+        const priceText = row.querySelector('.price').textContent;
+
+        // Parse the price correctly (ensure you're removing currency format)
+        const price = parseFloat(priceText.replace(/\./g, "").replace(" VNĐ", "").trim());
+
+        const total = price * quantity;
+
+        const totalCell = row.querySelector('.total');
+        // Format total correctly with thousands separator and currency
+        totalCell.textContent = total.toLocaleString('vi-VN') + "VND";
+
+        updateOrderTotal();
+    }
+
+
+
+    function updateOrderTotal() {
+        let grandTotal = 0;
+        document.querySelectorAll('.total').forEach(totalCell => {
+            const totalText = totalCell.textContent;
+            const totalValue = parseFloat(totalText.replace("VND", "").replace(/\./g, "").replace(",", "").trim());
+            grandTotal += totalValue;
+        });
+
+
+        grandTotal = grandTotal;
+
+        document.getElementById('order-total').textContent = grandTotal.toLocaleString('vi-VN') + " VND"; // Update grand total
+    }
+
+
+
+
+</script>
+<script>
+    document.querySelectorAll('.formatted-price').forEach(el => {
+        const amount = el.textContent;
+        el.textContent = formatCurrencyVND(amount);
+    });
+
+    function formatCurrencyVND(amount) {
+        return new Intl.NumberFormat('vi-VN').format(amount) + ' VND';
+    }
+</script>
+
 </body>
 </html>

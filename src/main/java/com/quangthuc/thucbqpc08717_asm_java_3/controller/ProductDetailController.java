@@ -15,11 +15,18 @@ import java.util.List;
 public class ProductDetailController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int productId = Integer.parseInt(req.getParameter("id"));
+        req.setAttribute("product", getProductById(productId));
         req.getRequestDispatcher("/views/jsp/product-detail.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         req.getRequestDispatcher("/views/jsp/product-detail.jsp").forward(req, resp);
+    }
+    public static ProductModel getProductById(int productId) {
+        ProductDAO productDAO = new ProductDAO();
+        ProductModel productModel = productDAO.selectById(productId);
+        return productModel;
     }
 }

@@ -41,6 +41,67 @@ public class ProductDAO extends DataDAO implements ProductInterface {
         return list;
     }
 
+    public List<ProductModel> selectAllByStatus() {
+        List<ProductModel> list = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+
+            ResultSet rs = query(PRODUCT_SELECT_ALL_BY_STATUS);
+            while (rs.next()){
+                //info SQl
+                int idProduct = rs.getInt(COLUMN_ID_PRODUCT);
+                int idCategory = rs.getInt(COLUMN_ID_CATEGORY);
+                String nameCategory = rs.getString(COLUMN_NAME_CATEGORY);
+                String nameImage = rs.getString(COLUMN_NAME_IMAGE);
+                String name = rs.getString(COLUMN_NAME);
+                String shortDesc = rs.getString(COLUMN_SHORT_DESC);
+                String detail = rs.getString(COLUMN_DETAIL);
+                int quantity = rs.getInt(COLUMN_QUANTITY);
+                int price = rs.getInt(COLUMN_PRICE);
+                Date dateCreated = rs.getDate(COLUMN_DATE_CREATED);
+                int status = rs.getInt(COLUMN_STATUS);
+                //img
+                ImageModel imageModel = new ImageModel(idProduct, nameImage);
+                list.add(new ProductModel(idProduct, idCategory, name, shortDesc, detail, quantity, price, dateCreated, status, imageModel));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    @Override
+    public List<ProductModel> selectAllByIdCartDetail(int idCartDetail) {
+        List<ProductModel> list = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+
+            ResultSet rs = query(PRODUCT_SELECT_ALL_BY_ID_CART_DETAIL, idCartDetail);
+            while (rs.next()){
+                //info SQl
+                int idProduct = rs.getInt(COLUMN_ID_PRODUCT);
+                int idCategory = rs.getInt(COLUMN_ID_CATEGORY);
+                String nameCategory = rs.getString(COLUMN_NAME_CATEGORY);
+                String nameImage = rs.getString(COLUMN_NAME_IMAGE);
+                String name = rs.getString(COLUMN_NAME);
+                String shortDesc = rs.getString(COLUMN_SHORT_DESC);
+                String detail = rs.getString(COLUMN_DETAIL);
+                int quantity = rs.getInt(COLUMN_QUANTITY);
+                int price = rs.getInt(COLUMN_PRICE);
+                Date dateCreated = rs.getDate(COLUMN_DATE_CREATED);
+                int status = rs.getInt(COLUMN_STATUS);
+                //img
+                ImageModel imageModel = new ImageModel(idProduct, nameImage);
+                list.add(new ProductModel(idProduct, idCategory, name, shortDesc, detail, quantity, price, dateCreated, status, imageModel));
+
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
     @Override
     public ProductModel selectById(int id) {
         ProductModel productModel = null;
@@ -68,7 +129,6 @@ public class ProductDAO extends DataDAO implements ProductInterface {
 
     @Override
     public int insert(ProductModel productModel) {
-
         int generatedID = -1;
         try {
             Connection con = getConnection();
@@ -95,6 +155,7 @@ public class ProductDAO extends DataDAO implements ProductInterface {
         return generatedID;
     }
 
+
     @Override
     public boolean update(ProductModel productModel) {
         boolean rs = false;
@@ -109,6 +170,19 @@ public class ProductDAO extends DataDAO implements ProductInterface {
                     productModel.getStatus(),
                     productModel.getIdProduct()
             );
+            rs = true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return rs;
+    }
+
+    @Override
+    public boolean updateQuantity(int quantity, String nameProduct) {
+        boolean rs = false;
+        try {
+            Connection con = getConnection();
+            update(PRODUCT_UPDATE_QUANTITY, quantity, nameProduct);
             rs = true;
         } catch (Exception e) {
             throw new RuntimeException(e);

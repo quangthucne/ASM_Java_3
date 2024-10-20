@@ -37,7 +37,7 @@
                         <i class="lni lni-grid-alt"></i>
                     </button>
                     <div class="sidebar-logo">
-                        <a href="#">Dino store</a>
+                        <a href="#">Dino Store</a>
                     </div>
                 </div>
 
@@ -89,7 +89,7 @@
                     </li>
                 </ul>
                 <div class="sidebar-footer">
-                    <a href="#" class="sidebar-link">
+                    <a href="${pageContext.request.contextPath}/logout" class="sidebar-link">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Log out</span>
                     </a>
@@ -119,9 +119,10 @@
 
                 <section id="product-management" class="mb-5">
                     <h2>Category Management</h2>
-
-                    <button class="btn btn-primary" data-bs-toggle="modal"
-                            data-bs-target="#addProductModal">Add New Category</button>
+                    <a href="category-manage/service">
+                        <button class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#addProductModal">Add New Category</button>
+                    </a>
                     <table class="table table-striped" id="myTable">
                         <thead>
                         <tr>
@@ -138,7 +139,7 @@
                                     <td>${cate.name}</td>
                                     <td style="color: ${cate.status == 1 ?'green': 'red'};">${cate.status == 1 ? 'Đang kinh doanh':'Ngưng kinh doanh'}</td>
                                     <td style="display: flex; justify-content: center; align-items: center;">
-                                        <a href="#" class="btn btn-sm btn-warning edit-btn" data-id="${cate.idCategory}" data-name="${cate.name}" data-bs-toggle="modal" data-bs-target="#editCategoryModal">
+                                        <a href="category-manage/service?id=${cate.idCategory}" class="btn btn-sm btn-warning edit-btn" data-id="${cate.idCategory}" data-name="${cate.name}" >
                                             Edit
                                         </a>
                                         <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${cate.idCategory}" style="margin-left: 15px;">Delete</button>
@@ -151,60 +152,6 @@
                     </table>
                 </section>
             </main>
-        </div>
-    </div>
-</div>
-
-<!-- Modals for Adding Product and Category -->
-
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addProductModalLabel">Add New Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="${pageContext.request.contextPath}/category-manage" method="post">
-                    <div class="mb-3">
-                        <input type="text" class="form-control" name="categoryName" placeholder="Category name" required>
-                        <input type="number" value="1" name="categoryStatus" hidden="hidden">
-                        <input type="text" value="add" hidden="hidden" name="typeActive">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Add Category</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-
-<%--    Chỉnh sửa category--%>
-<!-- Edit Category Modal -->
-<div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form action="${pageContext.request.contextPath}/category-manage" method="post">
-                    <input type="text" name="typeActive" value="edit" hidden="hidden">
-                    <input type="text" name="categoryId" hidden="hidden">
-                    <div class="mb-3">
-                        <input type="text" placeholder="Category name" class="form-control" name="categoryName" required>
-                    </div>
-                    <div class="mb-3">
-                        <select class="form-control" id="categoryStatus" name="categoryStatus">
-                            <option value="-1">-Select Status-</option>
-                            <option value="1">Đang kinh doanh</option>
-                            <option value="0">Ngưng kinh doanh</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </form>
-            </div>
         </div>
     </div>
 </div>
@@ -264,39 +211,39 @@
         });
     });
 
-    document.addEventListener("DOMContentLoaded", function () {
-        const editButtons = document.querySelectorAll(".edit-btn");
-        const categoryIdInput = document.querySelector("#editCategoryModal input[name='categoryId']");
-        const categoryNameInput = document.querySelector("#editCategoryModal input[name='categoryName']");
-        const categoryStatusSelect = document.querySelector("#editCategoryModal select[name='categoryStatus']");
+    <%--document.addEventListener("DOMContentLoaded", function () {--%>
+    <%--    const editButtons = document.querySelectorAll(".edit-btn");--%>
+    <%--    const categoryIdInput = document.querySelector("#editCategoryModal input[name='categoryId']");--%>
+    <%--    const categoryNameInput = document.querySelector("#editCategoryModal input[name='categoryName']");--%>
+    <%--    const categoryStatusSelect = document.querySelector("#editCategoryModal select[name='categoryStatus']");--%>
 
-        editButtons.forEach(button => {
-            button.addEventListener("click", function (event) {
-                event.preventDefault(); // Ngăn không tải lại trang
+    <%--    editButtons.forEach(button => {--%>
+    <%--        button.addEventListener("click", function (event) {--%>
+    <%--            event.preventDefault(); // Ngăn không tải lại trang--%>
 
-                // Lấy giá trị id từ thuộc tính data-id
-                const categoryId = this.getAttribute("data-id");
-                const categoryName = this.getAttribute("data-name")
-                categoryIdInput.value = categoryId;
-                categoryNameInput.value = categoryName;
+    <%--            // Lấy giá trị id từ thuộc tính data-id--%>
+    <%--            const categoryId = this.getAttribute("data-id");--%>
+    <%--            const categoryName = this.getAttribute("data-name")--%>
+    <%--            categoryIdInput.value = categoryId;--%>
+    <%--            categoryNameInput.value = categoryName;--%>
 
-                // Gửi request đến server để lấy chi tiết category
-                fetch(`${pageContext.request.contextPath}/getIdCategory?id=${categoryId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        // Cập nhật các trường trong form modal
-                        console.log(data.name)
-                        categoryNameInput.value = data.name;
-                        categoryStatusSelect.value = data.status;
-                    })
-                    .catch(error => console.error("Error fetching category details:", error));
+    <%--            // Gửi request đến server để lấy chi tiết category--%>
+    <%--            fetch(`${pageContext.request.contextPath}/getIdCategory?id=${categoryId}`)--%>
+    <%--                .then(response => response.json())--%>
+    <%--                .then(data => {--%>
+    <%--                    // Cập nhật các trường trong form modal--%>
+    <%--                    console.log(data.name)--%>
+    <%--                    categoryNameInput.value = data.name;--%>
+    <%--                    categoryStatusSelect.value = data.status;--%>
+    <%--                })--%>
+    <%--                .catch(error => console.error("Error fetching category details:", error));--%>
 
-                // Hiển thị modal chỉnh sửa
-                const editCategoryModal = new bootstrap.Modal(document.getElementById("editCategoryModal"));
-                editCategoryModal.show();
-            });
-        });
-    });
+    <%--            // Hiển thị modal chỉnh sửa--%>
+    <%--            const editCategoryModal = new bootstrap.Modal(document.getElementById("editCategoryModal"));--%>
+    <%--            editCategoryModal.show();--%>
+    <%--        });--%>
+    <%--    });--%>
+    <%--});--%>
 
     document.addEventListener("DOMContentLoaded", function () {
         const deleteButtons = document.querySelectorAll(".delete-btn");

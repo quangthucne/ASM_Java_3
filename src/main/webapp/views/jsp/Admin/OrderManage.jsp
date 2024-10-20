@@ -36,7 +36,7 @@
             <i class="lni lni-grid-alt"></i>
           </button>
           <div class="sidebar-logo">
-            <a href="#">Dino store</a>
+            <a href="#">Dino Store</a>
           </div>
         </div>
 
@@ -88,7 +88,7 @@
           </li>
         </ul>
         <div class="sidebar-footer">
-          <a href="#" class="sidebar-link">
+          <a href="${pageContext.request.contextPath}/logout" class="sidebar-link">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Log out</span>
           </a>
@@ -139,6 +139,10 @@
                 <button class="btn btn-sm btn-warning" title="Edit" data-bs-toggle="modal" data-bs-target="#editOrderModal" onclick="populateModal(${order.idOrder}, ${order.status})">
                   <i class="fa-solid fa-edit"></i>
                 </button>
+                <button class="btn btn-sm btn-info" title="View" data-bs-toggle="modal" data-bs-target="#viewOrderModal" onclick="showOrderDetails(${order.idOrder})">
+                  <i class="fa-solid fa-eye"></i>
+                </button>
+
               </td>
             </tr>
             </c:forEach>
@@ -187,6 +191,29 @@
 
 </div>
 </div>
+<div class="modal fade" id="viewOrderModal" tabindex="-1" aria-labelledby="viewOrderModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="viewOrderModalLabel">Chi tiết đơn hàng</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Orderer:</strong> <span id="viewOrderUser"></span></p>
+        <p><strong>Date:</strong> <span id="viewDate"></span></p>
+        <p><strong>Address:</strong> <span id="viewOrderAddress"></span></p>
+        <p><strong>Product List:</strong></p>
+        <ul id="viewOrderProductList">
+          <!-- Danh sách sản phẩm sẽ được thêm ở đây -->
+        </ul>
+        <p><strong>Total Amount:</strong> <span id="viewOrderTotal"></span> VND</p>
+        <p><strong>Status:</strong> <span id="viewOrderStatus"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -277,6 +304,25 @@
       }
     });
   });
+</script>
+<script>
+  function fetchOrderDetails(orderId) {
+    $.ajax({
+      url: '${pageContext.request.contextPath}/order/api' + orderId, // Đường dẫn tới API để lấy thông tin đơn hàng
+      method: 'GET',
+      dataType: 'json',
+      success: function(data) {
+        openOrderModal(data); // Gọi hàm mở modal với dữ liệu đơn hàng
+      },
+      error: function(xhr, status, error) {
+        console.error('Lỗi khi lấy thông tin đơn hàng:', error);
+      }
+    });
+  }
+
+  // Gọi hàm khi cần thiết
+  fetchOrderDetails(orderId); // orderId là ID của đơn hàng cần lấy thông tin
+
 </script>
 
 </body>

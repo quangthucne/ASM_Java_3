@@ -18,9 +18,9 @@ public interface UserInterface {
     String COLUMN_STATUS = "status_user";
     String DATE_INSERT = "GETDATE()";
 
-    String USER_SELECT_ALL = String.format("SELECT * FROM %s", TABLE_NAME);
-    String USER_SELECT_BY_ID = String.format("SELECT * FROM %s WHERE %s=?", TABLE_NAME, COLUMN_ID_USER);
-    String USER_SELECT_BY_USERNAME = String.format("SELECT * FROM %s WHERE %s=?", TABLE_NAME, COLUNM_USER_NAME);
+    String USER_SELECT_ALL = String.format("SELECT * FROM %s WHERE %s = 0", TABLE_NAME, COLUMN_ROLE);
+    String USER_SELECT_BY_ID = String.format("SELECT * FROM %s WHERE %s = ?", TABLE_NAME, COLUMN_ID_USER);
+    String USER_SELECT_BY_USERNAME = String.format("SELECT * FROM %s WHERE %s=? AND %s = 1", TABLE_NAME, COLUNM_USER_NAME, COLUMN_STATUS);
     String USER_INSERT = String.format("INSERT INTO %s (%s, %s, %s, %s, %s, %s, %s, %s, %s) VALUES (?, ?, ?, ?, ?, ?, ?, %s, ?)",TABLE_NAME, COLUMN_FULL_NAME, COLUNM_USER_NAME, COLUMN_PASSWORD, COLUMN_GENDER, COLUMN_ROLE, COLUMN_EMAIL, COLUMN_PHONE, COLUMN_DATE_CREATED, COLUMN_STATUS, DATE_INSERT);
     String USER_UPDATE = String.format("UPDATE %s SET %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ?, %s = ? WHERE %s=?", TABLE_NAME, COLUMN_FULL_NAME, COLUNM_USER_NAME, COLUMN_PASSWORD, COLUMN_GENDER, COLUMN_ROLE, COLUMN_EMAIL, COLUMN_PHONE, COLUMN_STATUS, COLUMN_ID_USER);
     String USER_DELETE = String.format("DELETE FROM %s WHERE %s = ?", TABLE_NAME, COLUMN_ID_USER);

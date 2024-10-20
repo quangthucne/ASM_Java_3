@@ -36,7 +36,7 @@
             <i class="lni lni-grid-alt"></i>
           </button>
           <div class="sidebar-logo">
-            <a href="#">Dino store</a>
+            <a href="#">Dino Store</a>
           </div>
         </div>
 
@@ -88,7 +88,7 @@
           </li>
         </ul>
         <div class="sidebar-footer">
-          <a href="#" class="sidebar-link">
+          <a href="${pageContext.request.contextPath}/logout" class="sidebar-link">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Log out</span>
           </a>
@@ -136,19 +136,14 @@
                 <td>${user.phone}</td>
                 <td>${user.dateCreated}</td>
                 <td style=" color: ${user.status == 1 ? 'green':'red'}">${user.status == 1 ? 'Hoạt động':'không hoạt động'}</td>
-                <td style="display: flex">
+                <td>
                   <a href="#" class="btn btn-sm btn-warning edit-btn"
                      data-id="${user.idUser}"
-                     data-name="${user.fullName}"
-                     data-gender="${user.gender}"
-                     data-email="${user.email}"
-                     data-phone="${user.phone}"
                      data-status="${user.status}"
                      data-bs-toggle="modal"
                      data-bs-target="#editUserModal">
                     Edit
                   </a>
-                  <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${user.idUser}" style="margin-left: 15px;">Delete</button>
                 </td>
               </tr>
             </c:forEach>
@@ -173,34 +168,13 @@
         <form id="editUserForm" action="${pageContext.request.contextPath}/user-manage" method="post">
           <input type="hidden" id="userId" name="userId" value="">
           <div class="mb-3">
-            <label for="fullName" class="form-label">Full Name</label>
-            <input type="text" class="form-control" id="fullName" name="fullName" required>
-          </div>
-          <div class="mb-3">
-            <label for="gender" class="form-label">Gender</label>
-            <select class="form-select" id="gender" name="gender">
-              <option value="1">Nam</option>
-              <option value="0">Nữ</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" required>
-          </div>
-          <div class="mb-3">
-            <label for="phone" class="form-label">Phone</label>
-            <input type="text" class="form-control" id="phone" name="phone" required>
-            <input type="text" hidden="hidden" name="typeActive" value="edit">
-            <input type="text" hidden="hidden" name="userId" id="userId">
-          </div>
-          <div class="mb-3">
-            <label for="status" class="form-label">Status</label>
+            <label for="status" class="form-label">Trạng thái</label>
             <select class="form-select" id="status" name="status">
               <option value="1">Hoạt động</option>
               <option value="0">Không hoạt động</option>
             </select>
           </div>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-primary">Cập nhật</button>
         </form>
       </div>
     </div>
@@ -241,16 +215,8 @@
 
         // Retrieve userId from data-id attribute
         const userId = this.getAttribute("data-id");
-        const userFullName = this.getAttribute("data-name");
-        const userGender = this.getAttribute("data-gender");
-        const userEmail = this.getAttribute("data-email");
-        const userPhone = this.getAttribute("data-phone");
         const userStatus = this.getAttribute("data-status");
         document.querySelector("#editUserForm #userId").value = userId;
-        document.querySelector("#editUserForm #fullName").value = userFullName;
-        document.querySelector("#editUserForm #gender").value = userGender;
-        document.querySelector("#editUserForm #email").value = userEmail;
-        document.querySelector("#editUserForm #phone").value = userPhone;
         document.querySelector("#editUserForm #status").value = userStatus;
 
         // Send a request to the server to get user details by userId
@@ -259,10 +225,6 @@
                 .then(data => {
                   // Populate the form fields in the modal with the fetched user data
                   document.querySelector("#editUserForm #userId").value = data.idUser;
-                  document.querySelector("#editUserForm #fullName").value = data.fullName;
-                  document.querySelector("#editUserForm #gender").value = data.gender;
-                  document.querySelector("#editUserForm #email").value = data.email;
-                  document.querySelector("#editUserForm #phone").value = data.phone;
                   document.querySelector("#editUserForm #status").value = data.status;
 
                   // Display the Edit User Modal

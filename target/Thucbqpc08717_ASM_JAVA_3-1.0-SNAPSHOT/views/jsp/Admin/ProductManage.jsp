@@ -62,7 +62,7 @@
             <i class="lni lni-grid-alt"></i>
           </button>
           <div class="sidebar-logo">
-            <a href="#">Dino store</a>
+            <a href="#">Dino Store</a>
           </div>
         </div>
 
@@ -114,7 +114,7 @@
           </li>
         </ul>
         <div class="sidebar-footer">
-          <a href="#" class="sidebar-link">
+          <a href="${pageContext.request.contextPath}/logout" class="sidebar-link">
             <i class="fa-solid fa-right-from-bracket"></i>
             <span>Log out</span>
           </a>
@@ -144,8 +144,10 @@
 
         <section id="product-management" class="mb-5">
           <h2>Product Management</h2>
-          <button class="btn btn-primary mb-3" data-bs-toggle="modal"
-                  data-bs-target="#addProductModal">Add New Product</button>
+          <a href="${pageContext.request.contextPath}/product/service">
+            <button class="btn btn-primary mb-3">Add New Product</button>
+          </a>
+
           <table id="myTable" class="table table-striped table-bordered">
             <thead>
             <tr>
@@ -170,8 +172,10 @@
                 <td>${pro.quantity}</td>
                 <td style="color: ${pro.status == 1 ? 'green':'red'};">${pro.status == 1 ? 'Đang bán':'Ngừng bán'}</td>
                 <td>
-                  <a href="#" class="btn btn-sm btn-warning edit-btn" data-id="${pro.idProduct}" data-name="${pro.name}" data-shortDesc="${pro.shortDesc}" data-price="${pro.price}" data-detail="${pro.detail}" data-status="${pro.status}" data-category="${pro.idCategory}" data-bs-toggle="modal" data-bs-target="#editProductModal">
-                    Edit
+                  <a href="${pageContext.request.contextPath}/product/service?id=${pro.idProduct}">
+                    <button class="btn btn-sm btn-warning edit-btn" >
+                      Edit
+                    </button>
                   </a>
                   <button type="button" class="btn btn-sm btn-danger delete-btn" data-id="${pro.idProduct}" style="margin-left: 15px;">Delete</button>
                 </td>
@@ -185,104 +189,6 @@
   </div>
 </div>
 
-<!-- Modals for Adding Product and Category -->
-<!-- Add Product Modal -->
-<div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-     aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addProductModalLabel">Add New Product</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="${pageContext.request.contextPath}/product-manage" method="post" enctype="multipart/form-data">
-          <div class="mb-3">
-            <input type="text" class="form-control" name="productName" placeholder="Product name" required>
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control" name="shortDesc" placeholder="Short desception" required>
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control" name="detail" placeholder="Detail" required>
-          </div>
-          <div class="mb-3">
-            <input type="number" class="form-control" name="quantity" placeholder="Quantity" required>
-          </div>
-          <div class="mb-3">
-            <input type="number" class="form-control" id="productPrice" name="productPrice" placeholder="Price" required>
-          </div>
-          <div class="mb-3">
-            <input type="file" name="image" id="img" accept="png" multiple>
-          </div>
-          <input type="number" value="1" hidden="hidden" name="statusProduct">
-          <input type="text" hidden="hidden" name="typeActive" value="add">
-          <div class="mb-3">
-            <label for="productCategory" class="form-label">Category</label>
-            <select class="form-select" id="productCategory" name="productCategory" required>
-              <c:forEach items="${categoryList}" var="cate">
-                <option value="${cate.idCategory}">${cate.name}</option>
-              </c:forEach>
-            </select>
-          </div>
-
-          <button type="submit" class="btn btn-primary">Add Product</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
-
-<%--Edit Product Model--%>
-<div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form action="${pageContext.request.contextPath}/product-manage" method="post" enctype="multipart/form-data">
-          <input type="hidden" name="productId" id="productId">
-
-          <div class="mb-3">
-            <input type="text" class="form-control" name="productName" id="productName" placeholder="Product name" required>
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control" name="shortDesc" id="editShortDesc" placeholder="Short description" required>
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control" name="detail" id="editDetail" placeholder="Detail" required>
-          </div>
-          <div class="mb-3">
-            <input type="number" class="form-control" name="productPrice" id="editProductPrice" placeholder="Price" required>
-          </div>
-          <div class="mb-3">
-            <input type="file" name="image" id="img" accept="png" multiple>
-          </div>
-          <div class="mb-3">
-            <label for="editStatusProduct" class="form-label">Status</label>
-            <select class="form-select" id="editStatusProduct" name="statusProduct" required>
-              <option value="1">Đang bán</option>
-              <option value="0">Ngừng bán</option>
-            </select>
-          </div>
-          <div class="mb-3">
-            <label for="editProductCategory" class="form-label">Category</label>
-            <select class="form-select" id="editProductCategory" name="productCategory" required>
-              <c:forEach items="${categoryList}" var="cate">
-                <option value="${cate.idCategory}">${cate.name}</option>
-              </c:forEach>
-            </select>
-          </div>
-          <input type="text" hidden="hidden" name="idProduct" >
-          <input type="text" hidden="hidden" name="typeActive" value="edit">
-          <button type="submit" class="btn btn-primary">Save Changes</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
 
 </main>
 </div>
@@ -351,63 +257,6 @@
           },
         },
       },
-    });
-  });
-
-  document.querySelectorAll('.edit-btn').forEach(button => {
-    button.addEventListener('click', function () {
-      const productId = this.getAttribute('data-id');
-      const productName = this.getAttribute('data-name');
-      const shortDesc = this.getAttribute('data-shortdesc');
-      const detail = this.getAttribute('data-detail');
-      const price = this.getAttribute('data-price');
-      const quantity = this.getAttribute('data-quantity');
-      const status = this.getAttribute('data-status');
-      const categoryId = this.getAttribute("data-category")
-
-      // Gán giá trị vào modal
-      document.getElementById('editProductId').value = productId;
-      document.getElementById('editProductName').value = productName;
-      document.getElementById('editShortDesc').value = shortDesc;
-      document.getElementById('editDetail').value = detail;
-      document.getElementById('editQuantity').value = quantity;
-      document.getElementById('editProductPrice').value = price;
-      document.getElementById('editStatusProduct').value = status;
-      document.getElementById('editCategoryModal').value = categoryId;
-    });
-  });
-
-  document.addEventListener("DOMContentLoaded", function () {
-    // Select all edit buttons
-    const editButtons = document.querySelectorAll('.edit-btn');
-
-    // Attach click event listener to each edit button
-    editButtons.forEach(button => {
-      button.addEventListener('click', function (event) {
-        event.preventDefault(); // Prevent the default behavior
-
-        // Retrieve data attributes from the button
-        const productId = this.getAttribute('data-id');
-        const productName = this.getAttribute('data-name');
-        const shortDesc = this.getAttribute('data-shortdesc');
-        const detail = this.getAttribute('data-detail');
-        const price = this.getAttribute('data-price');
-        const quantity = this.getAttribute('data-quantity');
-        const status = this.getAttribute('data-status');
-
-        // Set the values in the edit form fields
-        document.getElementById('productId').value = productId;
-        document.getElementById('productName').value = productName;
-        document.getElementById('editShortDesc').value = shortDesc;
-        document.getElementById('editDetail').value = detail;
-        document.getElementById('editProductPrice').value = price;
-        document.getElementById('editStatusProduct').value = status;
-        document.getElementById('editProductCategory').value = this.getAttribute('data-category');
-
-        // Show the modal programmatically if required
-        const editModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-        editModal.show();
-      });
     });
   });
 

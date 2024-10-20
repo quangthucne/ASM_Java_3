@@ -1,105 +1,79 @@
-const urlParams = new URLSearchParams(window.location.search);
-const storedName = urlParams.get('name');
-const storedPrice = urlParams.get('price');
-const storedImg = urlParams.get('img');
-
-document.querySelector('.title-big-details').innerHTML = decodeURIComponent(storedName)
-document.querySelector('.price-details').innerHTML = decodeURIComponent(storedPrice)
-document.querySelector('.img-details-product img').src = decodeURIComponent(storedImg)
 
 
 
-var getNumber = document.querySelector('.number-quatity-details');
-var index = 1;
-function plus() {
-    index++
-    getNumber.innerHTML = index;
-}
 
-function minus() {
-    if (index > 1) {
-        index--
-        getNumber.innerHTML = index
-    }
-}
+    const products = [];
+    const productsPerPage = 8; // Số sản phẩm trên mỗi trang
+    let currentPage = 1; // Trang hiện tại
 
-
-function checkValidateProduct(keyLocal, value) { //hàm dùng để kiểm tra xem items đã tồn tại hay chưa nếu tồn tại thì gộp số lượng lại
-    const cart = JSON.parse(localStorage.getItem(keyLocal));
-
-    let found = false;
-    for (let index = 0; index < cart.length; index++) {
-        if (value.name === cart[index].name) {
-            const sum = parseInt(cart[index].quantity) + parseInt(value.quantity);
-            cart[index].quantity = sum;
-            found = true;
-            break;
-        }
-    }
-
-    if (!found) {
-        cart.push(value);
-    }
-    localStorage.setItem(keyLocal, JSON.stringify(cart));
-}
-
-function showPopup(message) {
-    document.getElementById('popup-message').textContent = message;
-    document.getElementById('popup').style.display = 'block';
-    setTimeout(closePopup, 1000);
-}
-
-function closePopup() {
-    document.getElementById('popup').style.display = 'none';
-}
-
-function countLocalStorageKeys() { //hàm dùng để trả về số lượng items trong localStorage
-    const cart = JSON.parse(localStorage.getItem('cart')) || []
-    return cart.length
-}
-
-function addProductsToLocalStorage(keyLocal, value) { //hàm để add sản phẩm (mảng) vào local
-    let products = JSON.parse(localStorage.getItem(keyLocal)) || [];
-    products.push(value);
-    localStorage.setItem(keyLocal, JSON.stringify(products));
-}
-
-function reloadCountCart() { //hàm này khi gọi sẽ update số lượng items đang có từ hàm countLocalStorageKeys() vào id count-products ở html
-    document.querySelector('#count-products').innerHTML = countLocalStorageKeys()
-}
-reloadCountCart()
-
-function add() {
-    showPopup('Đã thêm vào giỏ hàng!');
-
-    const nameProduct = document.querySelector(".title-big-details").textContent
-    const price = document.querySelector('.price-details').innerHTML = decodeURIComponent(storedPrice)
-    const img = document.querySelector('.img-details-product img').src
-    const quantity = document.querySelector('.number-quatity-details').textContent
-    value = {
-        name: nameProduct,
-        price: price.split(' ')[0].replace('.', ''),
-        img: img,
-        quantity: JSON.parse(quantity)
-    }
-    const keyLocal = 'cart'
+    // Hàm lấy dữ liệu sản phẩm từ máy chủ (có thể thay đổi theo cách bạn lấy dữ liệu)
+    async function fetchProducts() {
     try {
-        checkValidateProduct(keyLocal, value)
-        reloadCountCart()
-    } catch (error) {
-        addProductsToLocalStorage(keyLocal, value)
-        reloadCountCart()
-    }
+    const response = await fetch('/api/products'); // Thay đổi đường dẫn API theo yêu cầu của bạn
+    const data = await response.json();
+    products.push(...data); // Thêm tất cả sản phẩm vào mảng
+    renderProducts();
+    renderPagination();
+} catch (error) {
+    console.error('Error fetching products:', error);
+}
+}
 
-};
+    // Hàm hiển thị sản phẩm cho trang hiện tại
+    function renderProducts() {
+    const start = (currentPage - 1) * productsPerPage;
+    const end = Math.min(start + productsPerPage, products.length);
+    const productList = document.getElementById('product-list');
+    productList.innerHTML = ''; // Xóa danh sách sản phẩm hiện tại
 
-function bought() {
-    showPopup('Đã mua hàng!');
-    add()
+    for (let i = start; i < end; i++) {
+    const product = products[i];
+    const productCard = `
+                <div class="col-md-3 mb-4">
+                    <div class="card product-card h-100 shadow-sm">
+                        <img src="${product.image}" class="card-img-top img-fluid" alt="${product.name}">
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text text-danger">Giá bán <span class="formatted-price">${formatCurrencyVND(product.price)}</span></p>
+                            <p class="card-text text-muted">Số lượng ${product.quantity}</p>
+                            <div class="mt-auto">
+                                <button class="btn btn-outline-warning w-100 mb-2" data-idCart="idCart">Thêm giỏ hàng</button>
+                                <button class="btn btn-warning w-100">Mua Ngay</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+    productList.innerHTML += productCard;
+}
+}
+
+    // Hàm hiển thị phân trang
+    function renderPagination() {
+    const paginationList = document.getElementById('pagination');
+    paginationList.innerHTML = ''; // Xóa danh sách phân trang hiện tại
+    const totalPages = Math.ceil(products.length / productsPerPage);
+
+    if (currentPage > 1) {
+    paginationList.innerHTML += `<li><a href="#" onclick="changePage(${currentPage - 1})">« Previous</a></li>`;
+}
+
+    for (let i = 1; i <= totalPages; i++) {
+    paginationList.innerHTML += `
+                <li><a href="#" onclick="changePage(${i})" class="${i == currentPage ? 'active' : ''}">${i}</a></li>`;
+}
+
+    if (currentPage < totalPages) {
+    paginationList.innerHTML += `<li><a href="#" onclick="changePage(${currentPage + 1})">Next »</a></li>`;
+}
+}
+
+    // Hàm thay đổi trang
+    function changePage(page) {
+    currentPage = page;
+    renderProducts(); // Hiển thị lại sản phẩm cho trang mới
+    renderPagination(); // Cập nhật phân trang
 }
 
 
-function cart() {
-    const btnCart = document.querySelector('#cart-icon')
-    window.location.href = 'http://localhost:3000/Rubik%20Tournament/cart.html'
-}
+    // Khởi động ứng dụng
+    fetchProducts();

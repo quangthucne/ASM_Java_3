@@ -1,11 +1,32 @@
 package com.quangthuc.thucbqpc08717_asm_java_3.DAO;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.sql.*;
 
 public class DataDAO {
     private static String jdbcUrl = "jdbc:sqlserver://localhost:1433;databaseName=sales_phone;encrypt=true;trustServerCertificate=true;";
     private static String username = "sa";
     private static String password = "quangthucdz@0310";
+    private static HikariDataSource dataSource;
+
+    static {
+        // Cấu hình HikariCP
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:sqlserver://localhost:1433;databaseName=sales_phone;encrypt=true;trustServerCertificate=true;");
+        config.setUsername("sa");
+        config.setPassword("quangthucdz@0310");
+        config.setDriverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+        config.setMaximumPoolSize(10);
+
+        // Tạo DataSource
+        dataSource = new HikariDataSource(config);
+    }
+
+    public static Connection getConnectionData() throws SQLException {
+        return dataSource.getConnection();
+    }
 
     public static Connection getConnection(){
         Connection connection = null;
@@ -19,6 +40,7 @@ public class DataDAO {
         }
         return connection;
     };
+
     public static PreparedStatement getStmt(String sql, Object... args) throws SQLException {
         PreparedStatement pstmt = null;
         if (sql.trim().startsWith("{")) {

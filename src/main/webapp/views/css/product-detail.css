@@ -204,3 +204,12 @@ body {
     font-size: 20px;
 }
 
+ .thumbnail img {
+     transition: transform 0.2s; /* Hiệu ứng chuyển đổi */
+ }
+
+.thumbnail img:hover {
+    transform: scale(1.1); /* Phóng to ảnh khi rê chuột */
+    cursor: pointer; /* Hiển thị con trỏ tay */
+}
+

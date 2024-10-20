@@ -6,12 +6,18 @@
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="jakarta.tags.core" %>
 <html>
 <head>
     <title>Thông tin cá nhân</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/profile.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/style.css" type="text/css">
-    
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://kit.fontawesome.com/27e6f9e8b6.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+
 </head>
 <body>
 <div class="header">
@@ -23,21 +29,39 @@
             <li><a href="chinh-sach-bao-hanh.html">
                 <p>CSKH</p>
             </a></li>
-            <li>
-                <a href="#">
-                    <a href="#" style="width: 50px; display:flex; justify-content: center;align-items: center;"><i class="fa-solid fa-user" id="user"></i></a>
+            <%--                profile--%>
+            <c:choose>
+                <c:when test="${user == null}">
+                    <li>
+                        <a href="#">
+                            <a href="#" style="width: 50px; display:flex; justify-content: center;align-items: center;"><i class="fa-solid fa-user" id="user"></i></a>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="login">
+                                <p>ĐĂNG NHẬP</p>
+                            </a></li>
+                        </ul>
+                    </li>
+                </c:when>
+                <c:otherwise>
+                    <li>
+                        <a href="#">
+                            <a href="#" style="width: 150px;" class="user-name">${user.fullName}</a>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="profile">
+                                <p>Thông tin</p>
+                            </a></li>
+                            <li>
+                                <a href="">
+                                    <p>Dăng xuất</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </c:otherwise>
+            </c:choose>
 
-
-                </a>
-                <ul class="submenu">
-                    <li><a href="login.html">
-                        <p>ĐĂNG NHẬP</p>
-                    </a></li>
-                    <li><a href="register.html">
-                        <p>ĐĂNG KÝ</p>
-                    </a></li>
-                </ul>
-            </li>
         </ul>
     </div>
     <div class="header-search">
@@ -49,31 +73,30 @@
             <button type="submit">Tìm kiếm <i class="fa-solid fa-magnifying-glass" id="giohang"></i></button>
         </div>
         <div class="cat-shopping">
-            <a href="cat-shopping.html"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </div>
     <div class="header-menu">
         <ul class="menu">
             <li>
-                <a href="#">DANH MỤC</a>
+                <a href="#" class="text-decoration-none">DANH MỤC</a>
                 <ul class="menu-sub">
-                    <li><a href="#">Giày</a></li>
-                    <li><a href="#">Balo</a></li>
-                    <li><a href="#">Đồng hồ</a></li>
-                    <li><a href="#">Set quà</a></li>
+                    <c:forEach items="${category}" var="cate">
+                        <li><a href="product" data-id="${cate.idCategory}">${cate.name}</a></li>
+                    </c:forEach>
                 </ul>
             </li>
             <li>
-                <a href="#">FLASH SALE</a>
+                <a href="#" class="text-decoration-none">FLASH SALE</a>
             </li>
             <li>
-                <a href="product">SẢN PHẨM</a>
+                <a href="product" class="text-decoration-none">SẢN PHẨM</a>
             </li>
             <li>
-                <a href="contact.html">LIÊN HỆ</a>
+                <a href="contact.html" class="text-decoration-none">LIÊN HỆ</a>
             </li>
             <li>
-                <a href="#">THƯƠNG HIỆU</a>
+                <a href="#" class="text-decoration-none">THƯƠNG HIỆU</a>
                 <ul class="menu-sub">
                     <li><a href="#">Mike</a></li>
                     <li><a href="#">Gucci</a></li>
@@ -84,23 +107,24 @@
         </ul>
     </div>
 </div>
+
 <div class="container">
     <div class="profile-section">
         <h2>Hồ sơ cá nhân</h2>
         <div class="profile-info">
             <img src="${pageContext.request.contextPath}/views/img/logo.jpg" alt="Profile Picture" id="profile-picture">
             <div class="details">
-                <p><strong>Name:</strong> <span id="profile-name">Bùi Quang Thực</span></p>
-                <p><strong>Email:</strong> <span id="profile-email">Thucbqpc08717@gmail.com</span></p>
-                <p><strong>Phone:</strong> <span id="profile-phone">0917988192</span></p>
+                <p><strong>Name:</strong> <span id="profile-name">${user.fullName}</span></p>
+                <p><strong>Email:</strong> <span id="profile-email">${user.email}</span></p>
+                <p><strong>Phone:</strong> <span id="profile-phone">${user.phone}</span></p>
             </div>
         </div>
     </div>
 
     <div class="history-section">
         <h2>Lịch sử mua hàng</h2>
-        <table id="purchase-history">
-            <thead>
+        <table class="table table-striped" id="myTable">
+        <thead>
             <tr>
                 <th>Mã đơn hàng</th>
                 <th>Ngày</th>
@@ -183,6 +207,17 @@
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
+<script>
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            paging: true,
+            ordering: true,
+            info: true,
+            language: {
+                url: "//cdn.datatables.net/plug-ins/1.13.1/i18n/vi.json"
+            }
+        });
+    });
+</script>
 </body>
 </html>

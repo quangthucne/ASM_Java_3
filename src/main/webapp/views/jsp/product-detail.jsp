@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%--
   Created by IntelliJ IDEA.
   User: buiquangthuc
@@ -11,7 +12,11 @@
     <title>Chi tiết sản phẩm</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/product-detail.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/views/css/style.css" type="text/css">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css">
+    <script src="https://kit.fontawesome.com/27e6f9e8b6.js" crossorigin="anonymous"></script>
+    <link href="https://cdn.lineicons.com/4.0/lineicons.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 <body>
 <div class="header">
@@ -23,21 +28,39 @@
             <li><a href="chinh-sach-bao-hanh.html">
                 <p>CSKH</p>
             </a></li>
-            <li>
-                <a href="#">
-                    <a href="#" style="width: 50px; display:flex; justify-content: center;align-items: center;"><i class="fa-solid fa-user" id="user"></i></a>
+            <%--                profile--%>
+            <c:choose>
+                <c:when test="${user == null}">
+                    <li>
+                        <a href="#">
+                            <a href="#" style="width: 50px; display:flex; justify-content: center;align-items: center;"><i class="fa-solid fa-user" id="user"></i></a>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="login">
+                                <p>ĐĂNG NHẬP</p>
+                            </a></li>
+                        </ul>
+                    </li>
+                </c:when>
+                <c:otherwise>
+                    <li>
+                        <a href="#">
+                            <a href="#" style="width: 150px;" class="user-name">${user.fullName}</a>
+                        </a>
+                        <ul class="submenu">
+                            <li><a href="profile">
+                                <p>Thông tin</p>
+                            </a></li>
+                            <li>
+                                <a href="">
+                                    <p>ĐĂNG XUẤT</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </c:otherwise>
+            </c:choose>
 
-
-                </a>
-                <ul class="submenu">
-                    <li><a href="login.html">
-                        <p>ĐĂNG NHẬP</p>
-                    </a></li>
-                    <li><a href="register.html">
-                        <p>ĐĂNG KÝ</p>
-                    </a></li>
-                </ul>
-            </li>
         </ul>
     </div>
     <div class="header-search">
@@ -49,31 +72,30 @@
             <button type="submit">Tìm kiếm <i class="fa-solid fa-magnifying-glass" id="giohang"></i></button>
         </div>
         <div class="cat-shopping">
-            <a href="cat-shopping.html"><i class="fa-solid fa-cart-shopping"></i></a>
+            <a href="cart"><i class="fa-solid fa-cart-shopping"></i></a>
         </div>
     </div>
     <div class="header-menu">
         <ul class="menu">
             <li>
-                <a href="#">DANH MỤC</a>
+                <a href="#" class="text-decoration-none">DANH MỤC</a>
                 <ul class="menu-sub">
-                    <li><a href="#">Giày</a></li>
-                    <li><a href="#">Balo</a></li>
-                    <li><a href="#">Đồng hồ</a></li>
-                    <li><a href="#">Set quà</a></li>
+                    <c:forEach items="${category}" var="cate">
+                        <li><a href="product" data-id="${cate.idCategory}">${cate.name}</a></li>
+                    </c:forEach>
                 </ul>
             </li>
             <li>
-                <a href="#">FLASH SALE</a>
+                <a href="#" class="text-decoration-none">FLASH SALE</a>
             </li>
             <li>
-                <a href="product">SẢN PHẨM</a>
+                <a href="product" class="text-decoration-none">SẢN PHẨM</a>
             </li>
             <li>
-                <a href="contact.html">LIÊN HỆ</a>
+                <a href="contact.html" class="text-decoration-none">LIÊN HỆ</a>
             </li>
             <li>
-                <a href="#">THƯƠNG HIỆU</a>
+                <a href="#" class="text-decoration-none">THƯƠNG HIỆU</a>
                 <ul class="menu-sub">
                     <li><a href="#">Mike</a></li>
                     <li><a href="#">Gucci</a></li>
@@ -84,52 +106,114 @@
         </ul>
     </div>
 </div>
-<div id="all-details">
-    <div class="img-all-details">
-        <div class="img-details-product">
-            <img src="https://giaydino.com/wp-content/uploads/2021/02/Giay-Nike-Air-Jordan-1-Low-Black-Toe-Do-Den-1.jpg"
-                 alt="Item 6">
+
+<section class="py-5">
+    <div class="container">
+        <div class="row gx-5">
+            <aside class="col-lg-6">
+                <div class="border rounded-4 mb-3 d-flex justify-content-center">
+                    <a data-fslightbox="mygalley" class="rounded-4" target="_blank" data-type="image"
+                       href="${pageContext.request.contextPath}/assets/img/${product.listImage[0].nameImage}">
+                        <img style="width: 500px; height: 500px; object-fit: cover; margin: auto;" class="rounded-4 fit"
+                             src="${pageContext.request.contextPath}/assets/img/${product.listImage[0].nameImage}"
+                             alt="${product.name}" id="mainImage" />
+                    </a>
+                </div>
+                <div class="d-flex justify-content-center mb-3">
+                    <c:forEach items="${product.listImage}" var="img">
+                        <a href="javascript:void(0);" class="thumbnail" onclick="changeImage('${img.nameImage}')">
+                            <img width="60" height="60" class="rounded-2"
+                                 src="${pageContext.request.contextPath}/assets/img/${img.nameImage}"
+                                 alt="Thumbnail" />
+                        </a>
+                    </c:forEach>
+                </div>
+            </aside>
+            <main class="col-lg-6">
+                <div class="ps-lg-3">
+                    <h4 class="title text-dark">
+                        ${product.name}
+                    </h4>
+                    <div class="d-flex flex-row my-3">
+                        <div class="text-warning mb-1 me-2">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                            <span class="ms-1">
+                                    4.5
+                                </span>
+                        </div>
+                        <span class="text-muted"><i class="fas fa-shopping-basket fa-sm mx-1"></i>154 orders</span>
+                        <span class="text-success ms-2">In stock</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <span class="h5">${product.price}</span>
+                    </div>
+
+                    <p>
+                        ${product.shortDesc}
+                    </p>
+
+                    <hr />
+
+                    <div class="row mb-4">
+                        <!-- col.// -->
+                        <div class="col-md-4 col-6 mb-3">
+                            <label class="mb-2 d-block">Số lượng ${product.quantity}</label>
+                            <div class="input-group mb-3" style="width: 170px;">
+                                <button class="btn btn-white border border-secondary px-3" type="button"
+                                        id="button-addon1" data-mdb-ripple-color="dark">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <input type="text" class="form-control text-center border border-secondary"
+                                       placeholder="14" aria-label="Example text with button addon"
+                                       aria-describedby="button-addon1" />
+                                <button class="btn btn-white border border-secondary px-3" type="button"
+                                        id="button-addon2" data-mdb-ripple-color="dark">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="#" class="btn btn-warning shadow-0"> Mua hàng </a>
+                    <a href="#" class="btn btn-primary shadow-0"> <i class="me-1 fa fa-shopping-basket"></i> Thêm vào giỏ hàng</a>
+                </div>
+            </main>
         </div>
     </div>
-    <div class="infor-details">
-        <div class="title-big-details">
-            Giày Sneaker Nike Air Force 1
-        </div>
-        <div class="icon-star-details">
-            4.9
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-            <i class="fa-solid fa-star"></i>
-        </div>
-        <div class="price-details">
-            625.000 VNĐ
-        </div>
-        <div class="product-details-title">
-            Chi Tiết Sản Phẩm
-        </div>
-        <div class="product-details">
-            Ra mắt từ năm 1982, Nike Air Force 1 đã trở thành một trong những đôi giày sneaker kinh điển nhất mọi thời đại. Với thiết kế đơn giản, tinh tế và chất liệu cao cấp, Air Force 1 không chỉ là một đôi giày, mà còn là biểu tượng của phong cách đường phố.
-        </div>
-        <div class="quantity-details">
-            <div class="title-quantity-details">
-                Số Lượng
+</section>
+<!-- content -->
+
+<section class="bg-light border-top py-4">
+    <div class="container">
+        <div class="border rounded-2 px-3 py-2 bg-white">
+            <!-- Pills navs -->
+            <ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+                <li class="nav-item d-flex" role="presentation">
+                    <a class="nav-link d-flex align-items-center justify-content-center w-100 active" id="ex1-tab-1"
+                       data-mdb-toggle="pill" href="#ex1-pills-1" role="tab" aria-controls="ex1-pills-1"
+                       aria-selected="true">Mô tả</a>
+                </li>
+            </ul>
+            <!-- Pills navs -->
+
+            <!-- Pills content -->
+            <div class="tab-content" id="ex1-content">
+                <div class="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                    <p>
+                        ${product.detail}
+                    </p>
+                </div>
             </div>
-            <div class="btn-minus" onclick="minus()">-</div>
-            <div class="number-quatity-details">1</div>
-            <div class="btn-plus" onclick="plus()">+</div>
-        </div>
-        <div class="btn-details">
-            <div class="cart-details" onclick="add()">Thêm Vào Giỏ Hàng</div>
-            <div class="buy-details" onclick="bought()">MUA NGAY</div>
-        </div>
-        <div id="cart">
-            <div id="cart-icon" onclick="cart()"><i class='bx bxs-cart-alt'></i></div>
-            <div id="count-products">0</div>
+            <!-- Pills content -->
+
+
         </div>
     </div>
-</div>
+</section>
 
 
 
@@ -200,6 +284,11 @@
 </footer>
 
 <script src="${pageContext.request.contextPath}/views/js/product-detail.js"></script>
-
+<script>
+    function changeImage(imageName) {
+        const mainImage = document.getElementById("mainImage");
+        mainImage.src = "${pageContext.request.contextPath}/assets/img/" + imageName;
+    }
+</script>
 </body>
 </html>

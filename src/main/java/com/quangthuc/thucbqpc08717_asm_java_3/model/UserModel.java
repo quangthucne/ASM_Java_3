@@ -15,6 +15,7 @@ public class UserModel {
     private Date dateCreated;
     private int status;
 
+
     private List<AdressModel> adressList;
 
 

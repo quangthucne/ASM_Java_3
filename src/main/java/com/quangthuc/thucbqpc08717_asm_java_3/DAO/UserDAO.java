@@ -4,10 +4,7 @@ import com.quangthuc.thucbqpc08717_asm_java_3.model.AdressModel;
 import com.quangthuc.thucbqpc08717_asm_java_3.model.UserModel;
 import com.quangthuc.thucbqpc08717_asm_java_3.service.UserInterface;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,7 +85,7 @@ public class UserDAO extends DataDAO implements UserInterface {
                 userModel = new UserModel(idUser, fullName, userName, password, gender, role, email, phone, dateCreated, status, adressModelList);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            userModel = null;
         }
         return userModel;
     }
@@ -114,6 +111,37 @@ public class UserDAO extends DataDAO implements UserInterface {
         }
         return rs;
     }
+
+    public int insertGetGeneratedID(UserModel userModel) {
+        int generatedID = -1;
+        try {
+            Connection con = getConnection();
+            PreparedStatement statement = con.prepareStatement(USER_INSERT, PreparedStatement.RETURN_GENERATED_KEYS);
+            statement.setString(1, userModel.getFullName());
+            statement.setString(2, userModel.getUserName());
+            statement.setString(3, userModel.getPassword());
+            statement.setInt(4, userModel.getGender());
+            statement.setInt(5, userModel.getRole());
+            statement.setString(6, userModel.getEmail());
+            statement.setString(7, userModel.getPhone());
+            statement.setInt(8, userModel.getStatus());
+
+            // Thực thi cập nhật
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected > 0) {
+                ResultSet rs = statement.getGeneratedKeys();
+                if (rs.next()) {
+                    generatedID = rs.getInt(1);
+                }
+                rs.close();
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            return generatedID;
+        }
+        return generatedID;
+    }
+
 
     @Override
     public boolean update(UserModel userModel) {

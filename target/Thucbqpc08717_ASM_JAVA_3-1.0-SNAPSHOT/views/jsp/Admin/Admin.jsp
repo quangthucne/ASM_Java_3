@@ -26,7 +26,7 @@
                         <i class="lni lni-grid-alt"></i>
                     </button>
                     <div class="sidebar-logo">
-                        <a href="#">Website Sell Phone</a>
+                        <a href="#">Dino Store</a>
                     </div>
                 </div>
 
@@ -65,18 +65,6 @@
                         </ul>
                     </li>
                     <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
-                            <i class="fa-solid fa-chart-pie"></i>
-                            <span>Analytics</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
-                        <a href="#" class="sidebar-link">
-                            <i class="fa-solid fa-message"></i>
-                            <span>Message</span>
-                        </a>
-                    </li>
-                    <li class="sidebar-item">
                         <a href="user-manage" class="sidebar-link">
                             <i class="fa-solid fa-people-group"></i>
                             <span>User</span>
@@ -90,7 +78,7 @@
                     </li>
                 </ul>
                 <div class="sidebar-footer">
-                    <a href="#" class="sidebar-link">
+                    <a href="${pageContext.request.contextPath}/logout" class="sidebar-link">
                         <i class="fa-solid fa-right-from-bracket"></i>
                         <span>Log out</span>
                     </a>

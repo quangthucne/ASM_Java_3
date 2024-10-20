@@ -1,6 +1,7 @@
 package com.quangthuc.thucbqpc08717_asm_java_3.controller;
 
 import com.quangthuc.thucbqpc08717_asm_java_3.DAO.CategoryDAO;
+import com.quangthuc.thucbqpc08717_asm_java_3.DAO.DataDAO;
 import com.quangthuc.thucbqpc08717_asm_java_3.DAO.ImageDAO;
 import com.quangthuc.thucbqpc08717_asm_java_3.DAO.ProductDAO;
 import com.quangthuc.thucbqpc08717_asm_java_3.model.CategoryModel;
@@ -18,6 +19,10 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -96,25 +101,28 @@ public class ProductManageController extends HttpServlet {
         int productPrice = Integer.parseInt(req.getParameter("productPrice"));
         int status = Integer.parseInt(req.getParameter("statusProduct"));
         int categoryId = Integer.parseInt(req.getParameter("productCategory"));
-        System.out.println(productName);
-        System.out.println(shortDesc);
-        System.out.println(detail);
-        System.out.println(quantity);
-        System.out.println(productPrice);
-        System.out.println(status);
-
+        int idProduct = -1;
         ProductDAO productDAO = new ProductDAO();
         ProductModel productModel = new ProductModel(categoryId, productName, shortDesc, detail, quantity, productPrice, status);
         List<String> listNameImage = saveMultipleImagesProduct(req, resp);
         List<CategoryModel> listCategory = getAllCategory();
-        int idProduct = productDAO.insert(productModel);
-        System.out.println("id doof dowts " +idProduct);
-        if (idProduct == -1) {
-            req.setAttribute("message", "Thêm sản phẩm thất bại");
-        } else {
-            req.setAttribute("message", "Thêm sản phẩm thành công");
+
+
+        boolean productNameCheck = checkProductUnique(productName);
+        if (!productNameCheck) {
+            productDAO.updateQuantity(quantity, productName);
         }
-        addImageProduct(req, resp, idProduct, listNameImage);
+        else {
+            idProduct = productDAO.insert(productModel);
+            if (idProduct == -1) {
+                req.setAttribute("message", "Thêm sản phẩm thất bại");
+            } else {
+                addImageProduct(req, resp, idProduct, listNameImage);
+                req.setAttribute("message", "Thêm sản phẩm thành công");
+            }
+        }
+
+
         req.setAttribute("categoryList", listCategory);
         req.setAttribute("productList", productDAO.selectAll());
 
@@ -126,7 +134,6 @@ public class ProductManageController extends HttpServlet {
         for (String nameImgae : listNameImage) {
             imageModel = new ImageModel(idProduct, nameImgae);
             imageDAO.insert(imageModel);
-
         }
     }
 
@@ -185,5 +192,24 @@ public class ProductManageController extends HttpServlet {
         List<ProductModel> list = productDAO.selectByName(productName);
 
         req.setAttribute("productList", list);
+    }
+
+    private static boolean checkProductUnique(String nameProduct) {
+        boolean isUnique = true;
+
+        String query = "SELECT COUNT(*) FROM product WHERE name_product = ?";
+        try (Connection connection = DataDAO.getConnectionData();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, nameProduct);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next() && rs.getInt(1) > 0) {
+                isUnique = false;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return isUnique;
     }
 }

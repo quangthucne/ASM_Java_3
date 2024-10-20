@@ -31,6 +31,24 @@ public class CategoryDAO extends DataDAO implements CategoryInterface {
     }
 
     @Override
+    public List<CategoryModel> selectAllByStatus(int status) {
+        List<CategoryModel> list = new ArrayList<>();
+        try {
+            Connection con = getConnection();
+            ResultSet rs = query(CATEGORY_SELECT_ALL_BY_STATUS, status);
+            while (rs.next()) {
+                int idCategory = rs.getInt(COLUMN_ID);
+                String name = rs.getString(COLUMN_NAME);
+                list.add(new CategoryModel(idCategory, name, status));
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    @Override
     public CategoryModel selectById(int id) {
         CategoryModel categoryModel = null;
         try {

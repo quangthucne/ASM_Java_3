@@ -258,3 +258,30 @@ footer a {
     color: #3c97bf;
     text-decoration: none;
 }
+.notification-pass {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: limegreen;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.notification-fail {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: red;
+    color: white;
+    padding: 15px;
+    border-radius: 4px;
+}
+
+.close {
+    color: white;
+    float: right;
+    font-size: 22px;
+    font-weight: bold;
+    cursor: pointer;
+}

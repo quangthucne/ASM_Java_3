@@ -20,34 +20,41 @@ public class Login extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        login(req, resp);
+    }
+
+    public static void login (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
 
         UserDAO userDAO = new UserDAO();
         UserModel userModel= null;
 
-        
-        try{
-            userModel = userDAO.selectByUsername(username);
+        userModel = userDAO.selectByUsername(username);
 
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        System.out.println(userModel.getRole());
-        
         if (userModel != null && password.equals(userModel.getPassword())) {
+            if (password.equals(userModel.getPassword())){
+                Cookie idUser = new Cookie("idUser", String.valueOf(userModel.getIdUser()));
+                idUser.setMaxAge(60);
+                Cookie roleUser = new Cookie("roleUser", String.valueOf(userModel.getRole()));
+                roleUser.setMaxAge(60);
 
-            Cookie idUser = new Cookie("idUser", String.valueOf(userModel.getIdUser()));
-            idUser.setMaxAge(60);
-            Cookie roleUser = new Cookie("roleUser", String.valueOf(userModel.getRole()));
-            roleUser.setMaxAge(60);
-            if (userModel.getRole() == 1) {
-                resp.sendRedirect(req.getContextPath() + "/admin");
+                resp.addCookie(idUser);
+                resp.addCookie(roleUser);
+
+                if (userModel.getRole() == 1) {
+                    resp.sendRedirect(req.getContextPath() + "/admin");
+                }
+                else {
+                    resp.sendRedirect(req.getContextPath() + "/home");
+                }
+                return;
+            }else {
+                req.setAttribute("error", "Mật khẩu chưa chính xác!");
             }
-            else {
-                resp.sendRedirect(req.getContextPath() + "/home");
-            }
-            return;
+        }
+        else {
+            req.setAttribute("error", "Tên đăng nhập không tồn tại hoặc bị cấm");
         }
         req.getRequestDispatcher("/views/jsp/Login.jsp").forward(req, resp);
     }
